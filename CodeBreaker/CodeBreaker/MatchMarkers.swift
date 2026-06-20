@@ -42,5 +42,17 @@ struct MatchMarkers: View {
 
 
 #Preview {
-    MatchMarkers(matches: [.exact, .inexact, .exact, .nomatch])
+    let numpegsinrow:[Int] = [3,3,4,4,4,6,6,6]
+    VStack(alignment: .leading) {
+        ForEach(numpegsinrow, id:\.self) {numpeg in
+            HStack(alignment: .bottom) {
+                ForEach(1...numpeg, id:\.self) {index in
+                    Circle()
+                    .foregroundStyle(Color.primary) }
+                MatchMarkers(matches: [.exact, .inexact, .inexact])
+            }
+            .padding()
+            .frame(width: nil)
+        }
+    }.padding(20)
 }
