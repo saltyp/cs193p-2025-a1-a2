@@ -23,7 +23,14 @@ struct MatchMarkers: View {
             }
             VStack {
                 matchMarker(peg: 2)
-                matchMarker(peg: 3)
+                matchMarker(peg: (matches.count > 3) ? 3 : 0)
+                    .opacity(matches.count > 3 ? 1 : 0)
+            }
+            VStack {
+                matchMarker(peg: (matches.count > 4) ? 4 : 0)
+                    .opacity(matches.count > 4 ? 1 : 0)
+                matchMarker(peg: (matches.count > 5) ? 5 : 0)
+                    .opacity(matches.count > 5 ? 1 : 0)
             }
         }
     }
@@ -40,17 +47,22 @@ struct MatchMarkers: View {
 
 
 #Preview {
-    let numpegsinrow:[Int] = [3,3,4,4,4,6,6,6]
+    let numpegsinrow:[Int] = [3,3,4,4,4,6,6,5,5]
+    let pegmatches = [[Match.exact, .inexact, .inexact],[Match.exact,.nomatch,.nomatch], [Match.exact,.exact,.inexact,.inexact],[Match.exact,.exact,.inexact,.nomatch],
+        [Match.exact,.inexact,.nomatch,.nomatch],[Match.exact,.exact,.exact,.inexact],
+        [Match.exact,.exact,.exact,.inexact,.inexact,.inexact],
+        [Match.exact,.exact,.inexact,.inexact,.inexact],
+        [Match.exact,.inexact,.inexact]]
     let circleSize:CGFloat = 40
     let rowWidth: CGFloat = 380
     VStack (alignment: .leading){
-        ForEach(numpegsinrow, id:\.self) {numpeg in
+        ForEach(numpegsinrow.indices, id:\.self) {ix in
             HStack {
-                ForEach(1...numpeg, id:\.self) {index in
+                ForEach(1...numpegsinrow[ix], id:\.self) {_ in
                     Circle()
 //                        .frame(width: circleSize, height: circleSize)
                     .foregroundStyle(Color.primary) }
-                MatchMarkers(matches: [.exact, .inexact, .inexact])
+                MatchMarkers(matches: pegmatches[ix])
             }
             .frame(width: rowWidth, height: 1.1*circleSize, alignment: .leading)
             .padding(15)
