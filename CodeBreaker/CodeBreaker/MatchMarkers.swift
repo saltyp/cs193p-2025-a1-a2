@@ -34,8 +34,6 @@ struct MatchMarkers: View {
             .fill(exactCount > peg ? Color.primary : Color.clear)
             .strokeBorder(foundCount > peg ? Color.primary : Color.clear, lineWidth: 2)
             .aspectRatio(1, contentMode: .fit)
-        
-        
     }
 }
 
@@ -43,16 +41,19 @@ struct MatchMarkers: View {
 
 #Preview {
     let numpegsinrow:[Int] = [3,3,4,4,4,6,6,6]
-    VStack(alignment: .leading) {
+    let circleSize:CGFloat = 40
+    let rowWidth: CGFloat = 380
+    VStack (alignment: .leading){
         ForEach(numpegsinrow, id:\.self) {numpeg in
-            HStack(alignment: .bottom) {
+            HStack {
                 ForEach(1...numpeg, id:\.self) {index in
                     Circle()
+//                        .frame(width: circleSize, height: circleSize)
                     .foregroundStyle(Color.primary) }
                 MatchMarkers(matches: [.exact, .inexact, .inexact])
             }
-            .padding()
-            .frame(width: nil)
+            .frame(width: rowWidth, height: 1.1*circleSize, alignment: .leading)
+            .padding(15)
         }
-    }.padding(20)
+    }
 }
