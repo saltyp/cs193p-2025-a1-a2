@@ -26,12 +26,13 @@ struct MatchMarkers: View {
                 matchMarker(peg: (matches.count > 3) ? 3 : 0)
                     .opacity(matches.count > 3 ? 1 : 0)
             }
-            VStack {
-                matchMarker(peg: (matches.count > 4) ? 4 : 0)
-                    .opacity(matches.count > 4 ? 1 : 0)
-                matchMarker(peg: (matches.count > 5) ? 5 : 0)
-                    .opacity(matches.count > 5 ? 1 : 0)
-            }
+            if (matches.count > 4) {
+                VStack {
+                    matchMarker(peg: (matches.count > 4) ? 4 : 0)
+                        .opacity(matches.count > 4 ? 1 : 0)
+                    matchMarker(peg: (matches.count > 5) ? 5 : 0)
+                        .opacity(matches.count > 5 ? 1 : 0)
+                }}
         }
     }
     func matchMarker (peg:Int) -> some View {
@@ -48,7 +49,7 @@ struct MatchMarkers: View {
 
 #Preview {
     let numpegsinrow:[Int] = [3,3,4,4,4,6,6,5,5]
-    let pegmatches = [[Match.exact, .inexact, .inexact],[Match.exact,.nomatch,.nomatch], [Match.exact,.exact,.inexact,.inexact],[Match.exact,.exact,.inexact,.nomatch],
+    let egmatches = [[Match.exact, .inexact, .inexact],[Match.exact,.nomatch,.nomatch], [Match.exact,.exact,.inexact,.inexact],[Match.exact,.exact,.inexact,.nomatch],
         [Match.exact,.inexact,.nomatch,.nomatch],[Match.exact,.exact,.exact,.inexact],
         [Match.exact,.exact,.exact,.inexact,.inexact,.inexact],
         [Match.exact,.exact,.inexact,.inexact,.inexact],
@@ -60,9 +61,8 @@ struct MatchMarkers: View {
             HStack {
                 ForEach(1...numpegsinrow[ix], id:\.self) {_ in
                     Circle()
-//                        .frame(width: circleSize, height: circleSize)
                     .foregroundStyle(Color.primary) }
-                MatchMarkers(matches: pegmatches[ix])
+                MatchMarkers(matches: egmatches[ix])
             }
             .frame(width: rowWidth, height: 1.1*circleSize, alignment: .leading)
             .padding(15)
