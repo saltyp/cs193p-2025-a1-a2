@@ -40,7 +40,7 @@ struct CodeBreakerView: View {
                         }
                     }
             }
-            MatchMarkers(matches: code.match(against: game.MasterCode))
+            MatchMarkers(matches: code.matches)
         }
     }
 }

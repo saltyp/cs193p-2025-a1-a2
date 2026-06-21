@@ -17,7 +17,7 @@ struct CodeBreaker {
 
     mutating func attemptGuess() {
         var attempt = guess // change kind of Code to an attempt, from a guess
-        attempt.kind = .attempt
+        attempt.kind = .attempt(guess.match(against: MasterCode))
         attempts.append(attempt) // now attempt can be added to attempts
     }
     
@@ -38,11 +38,18 @@ struct Code {
 
     static let missing : Peg = .clear
     
-    enum Kind {
+    enum Kind : Equatable { //define enum as Equatable so that we automatically get '==' fxn w/o needing to define it
         case mastercode
         case guess
-        case attempt
+        case attempt([Match])
         case unknown
+    }
+    
+    var matches : [Match] {
+        switch kind {
+        case .attempt(let matches) : return matches
+        default: return []
+        }
     }
     
     func match(against otherCode: Code) -> [Match] {
