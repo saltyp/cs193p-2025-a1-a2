@@ -11,9 +11,15 @@ typealias Peg = Color // no need for enum Peg with just one var
 
 struct CodeBreaker {
     var MasterCode: Code = Code(kind: .mastercode)
-    var guess:Code = Code(kind: .guess)
-    var attempts : [Code] = [Code]()
+    var guess:Code = Code(kind: .guess)  // current guess in progress
+    var attempts : [Code] = [Code]()  // all attempts made
     let pegChoices : [Peg] = [.blue,.red,.green,.yellow] // choices available to make a guess
+
+    mutating func attemptGuess() {
+        var attempt = guess // change kind of Code to an attempt, from a guess
+        attempt.kind = .attempt
+        attempts.append(attempt) // now attempt can be added to attempts
+    }
     
     mutating func changeGuessPeg(at index: Int) {
         let existingPeg = guess.pegs[index]
@@ -29,7 +35,7 @@ struct CodeBreaker {
 
 struct Code {
     var kind : Kind
-    var pegs : [Peg] = [.blue,.yellow,.blue,.yellow]
+    var pegs : [Peg] = [.yellow,.yellow,.yellow,.yellow]
 
     static let missing : Peg = .clear
     

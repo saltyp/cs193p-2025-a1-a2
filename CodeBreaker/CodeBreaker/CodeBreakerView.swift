@@ -17,6 +17,9 @@ struct CodeBreakerView: View {
             ForEach(game.attempts.indices, id:\.self) {
                 ix in view(for:game.attempts[ix])
             }
+            Button("Guess") { 
+                game.attemptGuess()
+            }
         }
         .padding()
     }
