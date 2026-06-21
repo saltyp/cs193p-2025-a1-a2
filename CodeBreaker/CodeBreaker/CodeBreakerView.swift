@@ -12,20 +12,22 @@ struct CodeBreakerView: View {
     
     var body: some View {
         VStack{
-            pegs(colors:game.MasterCode.pegs)
-            pegs(colors:game.guess.pegs)
-//            pegs(colors:game.attempts.count > 0 ? game.attempts[game.attempts.count-1].pegs : [])
+            view(for:game.MasterCode)
+            view(for:game.guess)
+            ForEach(game.attempts.indices, id:\.self) {
+                ix in view(for:game.attempts[ix])
+            }
         }
         .padding()
     }
 }
 
-func pegs(colors:Array<Color> = []) -> some View {
+func view(for code:Code) -> some View {
     HStack {
-        ForEach(colors.indices, id:\.self) {index in
+        ForEach(code.pegs.indices, id:\.self) {index in
             RoundedRectangle(cornerRadius:10)
                 .aspectRatio(1,contentMode: .fit)
-            .foregroundStyle(colors[index]) }
+            .foregroundStyle(code.pegs[index]) }
         MatchMarkers(matches: [.exact, .inexact, .nomatch, .exact])
     }
 }
