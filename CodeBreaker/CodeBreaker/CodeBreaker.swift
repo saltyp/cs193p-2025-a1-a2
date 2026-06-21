@@ -11,7 +11,7 @@ typealias Peg = Color // no need for enum Peg with just one var
 
 struct CodeBreaker {
     var MasterCode: Code = Code(kind: .mastercode)
-    var guess:Code = Code(kind: .guess)  // current guess in progress
+    var guess : Code = Code(kind: .guess)  // current guess in progress
     var attempts : [Code] = [Code]()  // all attempts made
     let pegChoices : [Peg] = [.blue,.red,.green,.yellow] // choices available to make a guess
 
@@ -32,10 +32,9 @@ struct CodeBreaker {
     }
 }
 
-
 struct Code {
     var kind : Kind
-    var pegs : [Peg] = [.yellow,.yellow,.yellow,.yellow]
+    var pegs : [Peg] = [.blue,.yellow,.blue,.yellow]
 
     static let missing : Peg = .clear
     
@@ -44,6 +43,30 @@ struct Code {
         case guess
         case attempt
         case unknown
+    }
+    
+    func match(against otherCode: Code) -> [Match] {
+        var results : [Match] = Array(repeating: .nomatch, count: pegs.count)
+        var pegsToMatch = otherCode.pegs
+        // calculate exact matches: eg results -> [.nomatch, .exact, .nomatch, .exact]
+        for index in pegs.indices.reversed() {
+            // exact matches
+            if pegsToMatch.count > index, pegsToMatch[index] == pegs[index]  {
+                results[index] = .exact
+                pegsToMatch.remove(at: index)
+            }
+        }
+        // calculate inexact matches eg results -> [.inexact, .exact, .nomatch, .exact]
+            for index in pegs.indices {
+                if results[index] != .exact {
+                    if let matchIndex = pegsToMatch.firstIndex(of: pegs[index]) {
+                        results[index] = .inexact
+                        pegsToMatch.remove(at: matchIndex)
+                    }
+                }
+            }
+//        print(pegsToMatch, pegs, results)
+        return results
     }
 }
 
