@@ -44,19 +44,30 @@ struct CodeBreakerView: View {
         .minimumScaleFactor(0.1)
     }
     
+    @ViewBuilder
+    func convertStringToView(_ input: String) -> some View {
+        let stringToColorMap : [String:Color] = ["green":.green,"red":.red,"black":.black,"blue":.blue,"yellow":.yellow,"clear":.clear]
+        if let color = stringToColorMap[input.lowercased()] {
+            RoundedRectangle(cornerRadius:10)
+                .overlay {
+                    if (Code.missing == "clear") {
+                        RoundedRectangle(cornerRadius: 10)
+                            .strokeBorder(Color.gray)
+                    }
+                }
+                .contentShape(Rectangle())
+                .aspectRatio(1,contentMode: .fit)
+                .foregroundStyle(color)
+        } else {
+            Text(input)
+        }
+    }
+    
+    
     func view(for code:Code) -> some View {
         HStack {
             ForEach(code.pegs.indices, id:\.self) {index in
-                RoundedRectangle(cornerRadius:10)
-                    .overlay {
-                        if code.pegs[index] == Code.missing {
-                            RoundedRectangle(cornerRadius: 10)
-                                .strokeBorder(Color.gray)
-                        }
-                    }
-                    .contentShape(Rectangle())
-                    .aspectRatio(1,contentMode: .fit)
-                    .foregroundStyle(code.pegs[index])
+                convertStringToView(code.pegs[index])
                     .onTapGesture {
                         if code.kind == .guess {
                             game.changeGuessPeg(at:index)

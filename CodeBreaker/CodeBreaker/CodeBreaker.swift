@@ -5,9 +5,9 @@
 //  Created by danielringskog on 6/21/26.
 //
 
-import SwiftUI
+import Foundation
 
-typealias Peg = Color // no need for enum Peg with just one var
+typealias Peg = String // no need for enum Peg with just one var
 
 struct CodeBreaker {
     let codeLength : Int
@@ -15,16 +15,17 @@ struct CodeBreaker {
     var guess : Code // current guess in progress
     var attempts : [Code] = [Code]()  // all attempts made
     let pegChoices : [Peg] // choices available to make a guess
-
-    init(pegChoices : [Peg] = [.blue,.red,.green,.yellow] ) {
+    static let PegColorChoices : [Peg] = ["blue","red","green","yellow"]
+    static let PegEmojiChoices : [Peg] = ["😀","😃","😂","😍","😌","🤪","🥸","🐭","🐹","🦊","🐒","🐸"]
+    
+    init(pegChoices : [Peg] = PegColorChoices) {
         self.pegChoices = pegChoices
         self.codeLength = Int.random(in:3...6)
         self.guess = Code(kind:.guess, numpegs:self.codeLength)
         self.masterCode = Code(kind:.mastercode, numpegs:self.codeLength)
         masterCode.randomize(from: pegChoices, codeLength: self.codeLength )
-//        print(masterCode)
+        //        print(masterCode)
     }
-    
     mutating func attemptGuess() {
         // Ignore attempts by the user that they’ve already tried before or which have no pegs chosen at all:
         if attempts.firstIndex(where: { $0 == guess }) != nil { return }
@@ -57,7 +58,7 @@ struct Code {
         self.pegs = Array(repeating: Code.missing, count: numpegs)
     }
     
-    static let missing : Peg = .clear
+    static let missing : Peg = "clear"
     
     enum Kind : Equatable { //define enum as Equatable so that we automatically get '==' fxn w/o needing to define it
         case mastercode
