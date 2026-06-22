@@ -10,14 +10,20 @@ import SwiftUI
 typealias Peg = Color // no need for enum Peg with just one var
 
 struct CodeBreaker {
-    var MasterCode: Code = Code(kind: .mastercode)
+    var masterCode: Code = Code(kind: .mastercode)
     var guess : Code = Code(kind: .guess)  // current guess in progress
     var attempts : [Code] = [Code]()  // all attempts made
-    let pegChoices : [Peg] = [.blue,.red,.green,.yellow] // choices available to make a guess
+    let pegChoices : [Peg] // choices available to make a guess
 
+    init(pegChoices : [Peg] = [.blue,.red,.green,.yellow] ) {
+        self.pegChoices = pegChoices
+        masterCode.randomize(from: pegChoices )
+        print(masterCode)
+    }
+    
     mutating func attemptGuess() {
-        var attempt = guess // change kind of Code to an attempt, from a guess
-        attempt.kind = .attempt(guess.match(against: MasterCode))
+        var attempt = guess  // change kind of Code to an attempt, from a guess
+        attempt.kind = .attempt(guess.match(against: masterCode))  // set kind to an attempt with the associated data of matches
         attempts.append(attempt) // now attempt can be added to attempts
     }
     
@@ -34,7 +40,7 @@ struct CodeBreaker {
 
 struct Code {
     var kind : Kind
-    var pegs : [Peg] = [.blue,.yellow,.blue,.yellow]
+    var pegs : [Peg] = Array(repeating: Code.missing, count: 4)
 
     static let missing : Peg = .clear
     
@@ -43,6 +49,12 @@ struct Code {
         case guess
         case attempt([Match])
         case unknown
+    }
+    
+    mutating func randomize(from pegChoices: [Peg]) {
+        for ix in pegChoices.indices {
+            pegs[ix] = pegChoices.randomElement() ?? Code.missing
+        }
     }
     
     var matches : [Match] {
@@ -60,7 +72,7 @@ struct Code {
             // exact matches
             if pegsToMatch.count > index, pegsToMatch[index] == pegs[index]  {
                 results[index] = .exact
-                pegsToMatch.remove(at: index)
+                pegsToMatch.remove(at: index)  // eg mastercode pegs removed to avoid double count
             }
         }
         // calculate inexact matches eg results -> [.inexact, .exact, .nomatch, .exact]
