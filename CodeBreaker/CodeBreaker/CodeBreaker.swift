@@ -10,15 +10,18 @@ import SwiftUI
 typealias Peg = Color // no need for enum Peg with just one var
 
 struct CodeBreaker {
-    static let codeLength : Int = 5
-    var masterCode: Code = Code(kind: .mastercode)
-    var guess : Code = Code(kind: .guess)  // current guess in progress
+    let codeLength : Int
+    var masterCode: Code
+    var guess : Code // current guess in progress
     var attempts : [Code] = [Code]()  // all attempts made
     let pegChoices : [Peg] // choices available to make a guess
 
     init(pegChoices : [Peg] = [.blue,.red,.green,.yellow] ) {
         self.pegChoices = pegChoices
-        masterCode.randomize(from: pegChoices, codeLength: CodeBreaker.codeLength )
+        self.codeLength = Int.random(in:3...6)
+        self.guess = Code(kind:.guess, numpegs:self.codeLength)
+        self.masterCode = Code(kind:.mastercode, numpegs:self.codeLength)
+        masterCode.randomize(from: pegChoices, codeLength: self.codeLength )
 //        print(masterCode)
     }
     
@@ -43,10 +46,17 @@ struct CodeBreaker {
 }
 
 struct Code {
+    let numpegs : Int
     var kind : Kind
-    static let numpegs : Int = CodeBreaker.codeLength // static so can use const below. Will be created before self is available
-    var pegs : [Peg] = Array(repeating: Code.missing, count: numpegs)
-
+//    static let numpegs : Int = codeLength // static so can use const below. Will be created before self is available
+    var pegs : [Peg]
+ 
+    init(kind:Kind, numpegs:Int = 4) {
+        self.kind = kind
+        self.numpegs = numpegs
+        self.pegs = Array(repeating: Code.missing, count: numpegs)
+    }
+    
     static let missing : Peg = .clear
     
     enum Kind : Equatable { //define enum as Equatable so that we automatically get '==' fxn w/o needing to define it
