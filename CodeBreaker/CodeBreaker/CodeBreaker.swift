@@ -15,8 +15,6 @@ struct CodeBreaker {
     var guess : Code // current guess in progress
     var attempts : [Code] = [Code]()  // all attempts made
     let pegChoices : [Peg] // choices available to make a guess
-    static let PegColorChoices : [Peg] = ["blue","red","green","yellow","black"]
-    static let PegEmojiChoices : [Peg] = ["😀","😃","😂","😍","😌","🤪","🥸","🐭","🐹","🦊","🐒","🐸"]
     
     enum GameKind : CaseIterable {
         case color
@@ -25,9 +23,9 @@ struct CodeBreaker {
         var choices : [Peg] {
             switch self {
             case .color:
-                return CodeBreaker.PegColorChoices
+                return ["blue","red","green","yellow","black"]
             case .emoji:
-                return CodeBreaker.PegEmojiChoices
+                return ["😀","😃","😂","😍","😌","🤪","🥸","🐭","🐹","🦊","🐒","🐸"]
             }
         }
         
