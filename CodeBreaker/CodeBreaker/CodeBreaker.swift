@@ -10,6 +10,7 @@ import SwiftUI
 typealias Peg = Color // no need for enum Peg with just one var
 
 struct CodeBreaker {
+    static let codeLength : Int = 5
     var masterCode: Code = Code(kind: .mastercode)
     var guess : Code = Code(kind: .guess)  // current guess in progress
     var attempts : [Code] = [Code]()  // all attempts made
@@ -17,7 +18,7 @@ struct CodeBreaker {
 
     init(pegChoices : [Peg] = [.blue,.red,.green,.yellow] ) {
         self.pegChoices = pegChoices
-        masterCode.randomize(from: pegChoices )
+        masterCode.randomize(from: pegChoices, codeLength: CodeBreaker.codeLength )
 //        print(masterCode)
     }
     
@@ -43,7 +44,8 @@ struct CodeBreaker {
 
 struct Code {
     var kind : Kind
-    var pegs : [Peg] = Array(repeating: Code.missing, count: 4)
+    static let numpegs : Int = CodeBreaker.codeLength // static so can use const below. Will be created before self is available
+    var pegs : [Peg] = Array(repeating: Code.missing, count: numpegs)
 
     static let missing : Peg = .clear
     
@@ -54,8 +56,8 @@ struct Code {
         case unknown
     }
     
-    mutating func randomize(from pegChoices: [Peg]) {
-        for ix in pegChoices.indices {
+    mutating func randomize(from pegChoices: [Peg], codeLength: Int) {
+        for ix in 0..<codeLength {
             pegs[ix] = pegChoices.randomElement() ?? Code.missing
         }
     }
