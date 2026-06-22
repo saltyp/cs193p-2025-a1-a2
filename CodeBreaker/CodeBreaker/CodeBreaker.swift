@@ -22,6 +22,9 @@ struct CodeBreaker {
     }
     
     mutating func attemptGuess() {
+        // Ignore attempts by the user that they’ve already tried before or which have no pegs chosen at all:
+        if attempts.firstIndex(where: { $0 == guess }) != nil { return }
+        if guess.pegs.allSatisfy({$0 == Code.missing}) { return }
         var attempt = guess  // change kind of Code to an attempt, from a guess
         attempt.kind = .attempt(guess.match(against: masterCode))  // set kind to an attempt with the associated data of matches
         attempts.append(attempt) // now attempt can be added to attempts
@@ -62,6 +65,15 @@ struct Code {
         case .attempt(let matches) : return matches
         default: return []
         }
+    }
+    
+    static func == (lhs: Code, rhs: Code) -> Bool {
+        for ix in lhs.pegs.indices {
+            if lhs.pegs[ix] != rhs.pegs[ix] {
+                return false
+            }
+        }
+        return true
     }
     
     func match(against otherCode: Code) -> [Match] {
