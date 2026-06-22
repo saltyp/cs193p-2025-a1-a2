@@ -15,11 +15,29 @@ struct CodeBreaker {
     var guess : Code // current guess in progress
     var attempts : [Code] = [Code]()  // all attempts made
     let pegChoices : [Peg] // choices available to make a guess
-    static let PegColorChoices : [Peg] = ["blue","red","green","yellow"]
+    static let PegColorChoices : [Peg] = ["blue","red","green","yellow","black"]
     static let PegEmojiChoices : [Peg] = ["😀","😃","😂","😍","😌","🤪","🥸","🐭","🐹","🦊","🐒","🐸"]
     
-    init(pegChoices : [Peg] = PegColorChoices) {
-        self.pegChoices = pegChoices
+    enum GameKind : CaseIterable {
+        case color
+        case emoji
+        
+        var choices : [Peg] {
+            switch self {
+            case .color:
+                return CodeBreaker.PegColorChoices
+            case .emoji:
+                return CodeBreaker.PegEmojiChoices
+            }
+        }
+        
+        static var random : GameKind {
+            return .allCases.randomElement()!
+        }
+    }
+    
+    init() {
+        self.pegChoices = GameKind.random.choices
         self.codeLength = Int.random(in:3...6)
         self.guess = Code(kind:.guess, numpegs:self.codeLength)
         self.masterCode = Code(kind:.mastercode, numpegs:self.codeLength)
