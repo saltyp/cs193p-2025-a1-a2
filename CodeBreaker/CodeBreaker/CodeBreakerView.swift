@@ -47,20 +47,26 @@ struct CodeBreakerView: View {
     @ViewBuilder
     func convertStringToView(_ input: String) -> some View {
         let stringToColorMap : [String:Color] = ["green":.green,"red":.red,"black":.black,"blue":.blue,"yellow":.yellow,"clear":.clear]
-        if let color = stringToColorMap[input.lowercased()] {
-            RoundedRectangle(cornerRadius:10)
-                .overlay {
-                    if (Code.missing == "clear") {
-                        RoundedRectangle(cornerRadius: 10)
-                            .strokeBorder(Color.gray)
+        ZStack {
+            if let color = stringToColorMap[input.lowercased()] {
+                RoundedRectangle(cornerRadius:10)
+                    .foregroundStyle(color)
+                    .overlay {
+                        if (Code.missing == "clear") {
+                            RoundedRectangle(cornerRadius: 10)
+                                .strokeBorder(Color.gray)
+                        }
                     }
+            } else {
+                GeometryReader { geometry in
+                    Text(input)
+                        .font(.system(size: min(geometry.size.width, geometry.size.height)*0.8))
+                        .minimumScaleFactor(0.1)
                 }
-                .contentShape(Rectangle())
-                .aspectRatio(1,contentMode: .fit)
-                .foregroundStyle(color)
-        } else {
-            Text(input)
+            }
         }
+        .contentShape(Rectangle())
+        .aspectRatio(1,contentMode: .fit)
     }
     
     
