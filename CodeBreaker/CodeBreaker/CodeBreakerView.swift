@@ -19,8 +19,18 @@ struct CodeBreakerView: View {
                     ix in view(for:game.attempts[ix])
                 }
             }
+            newGameButton
         }
         .padding()
+    }
+    
+    var newGameButton: some View {
+        Button("New Game") {
+            game = CodeBreaker()
+        }
+        .buttonStyle(.bordered)
+        .font(.system(size: 30))
+        .minimumScaleFactor(0.1)
     }
     
     var guessButton: some View {
@@ -29,6 +39,7 @@ struct CodeBreakerView: View {
                 game.attemptGuess()
             }
         }
+        .buttonStyle(.bordered)
         .font(.system(size: 80))
         .minimumScaleFactor(0.1)
     }
