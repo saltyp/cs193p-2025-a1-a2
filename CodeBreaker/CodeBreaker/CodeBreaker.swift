@@ -57,35 +57,34 @@ struct Code {
         }
     }
     
-    var matches : [Match] {
+    var matches : [Match]? {
         switch kind {
         case .attempt(let matches) : return matches
-        default: return []
+        default: return nil
         }
     }
     
     func match(against otherCode: Code) -> [Match] {
-        var results : [Match] = Array(repeating: .nomatch, count: pegs.count)
-        var pegsToMatch = otherCode.pegs
+        var pegsToMatch = otherCode.pegs  //mutable
         // calculate exact matches: eg results -> [.nomatch, .exact, .nomatch, .exact]
-        for index in pegs.indices.reversed() {
-            // exact matches
+        let backwardsExactMatches = pegs.indices.reversed().map {index in
             if pegsToMatch.count > index, pegsToMatch[index] == pegs[index]  {
-                results[index] = .exact
                 pegsToMatch.remove(at: index)  // eg mastercode pegs removed to avoid double count
+                return Match.exact
+            } else {
+                return .nomatch
             }
         }
         // calculate inexact matches eg results -> [.inexact, .exact, .nomatch, .exact]
-            for index in pegs.indices {
-                if results[index] != .exact {
-                    if let matchIndex = pegsToMatch.firstIndex(of: pegs[index]) {
-                        results[index] = .inexact
-                        pegsToMatch.remove(at: matchIndex)
-                    }
+        let exactMatches = Array(backwardsExactMatches.reversed())
+        return pegs.indices.map {index in
+            if exactMatches[index] != .exact, let matchIndex = pegsToMatch.firstIndex(of: pegs[index]) {
+                    pegsToMatch.remove(at: matchIndex)
+                    return .inexact
+                } else {
+                    return exactMatches[index]
                 }
-            }
-//        print(pegsToMatch, pegs, results)
-        return results
+        }
     }
 }
 
