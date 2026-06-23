@@ -33,16 +33,20 @@ struct CodeBreaker {
             let newPeg = pegChoices[(indexOfExistingPegInPegChoices + 1) % pegChoices.count] // modulo as need to wrap around if at last index
             guess.pegs[index] = newPeg
         } else {
-            guess.pegs[index] = pegChoices.first ?? Code.missing
+            guess.pegs[index] = pegChoices.first ?? Code.missingPeg
         }
     }
 }
 
+extension Peg {
+    static let missing = Color.clear
+}
+
 struct Code {
     var kind : Kind
-    var pegs : [Peg] = Array(repeating: Code.missing, count: 4)
+    var pegs : [Peg] = Array(repeating: Code.missingPeg, count: 4)
 
-    static let missing : Peg = .clear
+    static let missingPeg : Peg = .clear
     
     enum Kind : Equatable { //define enum as Equatable so that we automatically get '==' fxn w/o needing to define it
         case mastercode
@@ -53,7 +57,7 @@ struct Code {
     
     mutating func randomize(from pegChoices: [Peg]) {
         for ix in pegChoices.indices {
-            pegs[ix] = pegChoices.randomElement() ?? Code.missing
+            pegs[ix] = pegChoices.randomElement() ?? Code.missingPeg
         }
     }
     
