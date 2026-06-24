@@ -47,18 +47,18 @@ struct CodeBreakerView: View {
                 game.attemptGuess()
             }
         }
-        .font(.system(size: 80))
-        .minimumScaleFactor(0.1)
+        .font(.system(size: GuessButton.maxFontSize)) 
+            .minimumScaleFactor(GuessButton.scaleFactor)
     }
     
     func view(for code:Code) -> some View {
         HStack {
             ForEach(code.pegs.indices, id:\.self) {index in
                 PegView(peg:code.pegs[index])
-                    .padding(5)
+                    .padding(Selection.border)
                     .background {
                         if selection == index, code.kind == .guess {
-                            RoundedRectangle(cornerRadius: 10).foregroundColor(Color.gray(0.9))
+                            Selection.shape.foregroundColor(Selection.color)
                         }
                     }
                     .onTapGesture {
@@ -79,6 +79,20 @@ struct CodeBreakerView: View {
                 }
             }
         }
+    
+    struct GuessButton {
+        static let minFontSize : CGFloat = 5
+        static let maxFontSize : CGFloat = 50
+        static let scaleFactor = minFontSize/maxFontSize
+        
+    }
+    
+    struct Selection {
+        static let border : CGFloat = 0.5
+        static let cornerRadius : CGFloat = 10
+        static let color: Color = Color.gray(0.9)
+        static let shape = RoundedRectangle(cornerRadius:cornerRadius)
+    }
 }
 
 extension Color  {
