@@ -25,6 +25,7 @@ struct CodeBreaker {
         var attempt = guess  // change kind of Code to an attempt, from a guess
         attempt.kind = .attempt(guess.match(against: masterCode))  // set kind to an attempt with the associated data of matches
         attempts.append(attempt) // now attempt can be added to attempts
+        guess.reset()
     }
     
     mutating func changeGuessPeg(at index: Int) {
