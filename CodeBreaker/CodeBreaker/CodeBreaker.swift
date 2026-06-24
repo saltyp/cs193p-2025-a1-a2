@@ -18,7 +18,7 @@ struct CodeBreaker {
     init(pegChoices : [Peg] = [.blue,.red,.green,.yellow] ) {
         self.pegChoices = pegChoices
         masterCode.randomize(from: pegChoices )
-        print(masterCode)
+//        print(masterCode)
     }
     
     mutating func attemptGuess() {

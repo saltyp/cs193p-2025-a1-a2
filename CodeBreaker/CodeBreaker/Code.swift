@@ -22,7 +22,7 @@ struct Code {
     }
     
     mutating func randomize(from pegChoices: [Peg]) {
-        for ix in pegChoices.indices {
+        for ix in pegs.indices {
             pegs[ix] = pegChoices.randomElement() ?? Code.missingPeg
         }
     }

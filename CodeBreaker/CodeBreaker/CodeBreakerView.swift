@@ -33,6 +33,7 @@ struct CodeBreakerView: View {
             ForEach(game.pegChoices, id: \.self) { peg in
                 Button {
                     game.setGuessPeg(peg, at:selection)
+                    selection = (selection + 1) % game.guess.pegs.count
                 } label: {
                     PegView(peg:peg)
                 }
@@ -47,26 +48,13 @@ struct CodeBreakerView: View {
                 game.attemptGuess()
             }
         }
-        .font(.system(size: GuessButton.maxFontSize)) 
+        .font(.system(size: GuessButton.maxFontSize))
             .minimumScaleFactor(GuessButton.scaleFactor)
     }
     
     func view(for code:Code) -> some View {
         HStack {
-            ForEach(code.pegs.indices, id:\.self) {index in
-                PegView(peg:code.pegs[index])
-                    .padding(Selection.border)
-                    .background {
-                        if selection == index, code.kind == .guess {
-                            Selection.shape.foregroundColor(Selection.color)
-                        }
-                    }
-                    .onTapGesture {
-                        if code.kind == .guess {
-                            selection = index
-                        }
-                    }
-            }
+            CodeView(code:code, selection: $selection)
             Rectangle().foregroundStyle(Color.clear).aspectRatio(1, contentMode: .fit)
                 .overlay {
                     if let matches = code.matches {
@@ -85,14 +73,7 @@ struct CodeBreakerView: View {
         static let maxFontSize : CGFloat = 50
         static let scaleFactor = minFontSize/maxFontSize
         
-    }
-    
-    struct Selection {
-        static let border : CGFloat = 0.5
-        static let cornerRadius : CGFloat = 10
-        static let color: Color = Color.gray(0.9)
-        static let shape = RoundedRectangle(cornerRadius:cornerRadius)
-    }
+    }    
 }
 
 extension Color  {
