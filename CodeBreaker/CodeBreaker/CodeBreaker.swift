@@ -10,6 +10,7 @@ import Foundation
 typealias Peg = String // no need for enum Peg with just one var
 
 struct CodeBreaker {
+    let gameKind : GameKind
     let codeLength : Int
     var masterCode: Code
     var guess : Code // current guess in progress
@@ -20,6 +21,7 @@ struct CodeBreaker {
         case color
         case emojiFace
         case emojiAnimal
+        case emojiVehicles
         
         var choices : [Peg] {
             switch self {
@@ -29,6 +31,17 @@ struct CodeBreaker {
                 return ["😀","😂","😍","😌","🤪","🥸"]
             case .emojiAnimal:
                 return ["🐭","🐹","🦊","🐒","🐸"]
+            case .emojiVehicles:
+                return ["🚗","🚛","🛵","🚃","🚀","🚁","🚢"]
+            }
+        }
+        
+        var name : String {
+            switch self {
+                case .color: return "Primary Colors"
+                case .emojiFace: return "Emoji Faces"
+                case .emojiAnimal: return "Emoji Animals"
+                case .emojiVehicles: return "Emoji Vehicles"
             }
         }
         
@@ -38,7 +51,8 @@ struct CodeBreaker {
     }
     
     init() {
-        self.pegChoices = GameKind.random.choices
+        self.gameKind = GameKind.random
+        self.pegChoices = self.gameKind.choices
         self.codeLength = Int.random(in:3...6)
         self.guess = Code(kind:.guess, numpegs:self.codeLength)
         self.masterCode = Code(kind:.mastercode, numpegs:self.codeLength)

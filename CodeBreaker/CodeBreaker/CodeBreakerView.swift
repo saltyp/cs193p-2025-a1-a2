@@ -45,6 +45,7 @@ struct CodeBreakerView: View {
     
     var body: some View {
         VStack{
+            Text("\(game.gameKind.name)!").font(.system(size: 30))
             view(for:game.masterCode)
             ScrollView {
                 view(for:game.guess)
@@ -56,7 +57,6 @@ struct CodeBreakerView: View {
         }
         .padding()
     }
-    
     
     var newGameButton: some View {
         Button("New Game") {
