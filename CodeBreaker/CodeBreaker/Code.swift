@@ -15,7 +15,7 @@ struct Code {
     static let missingPeg : Peg = .clear
     
     enum Kind : Equatable { //define enum as Equatable so that we automatically get '==' fxn w/o needing to define it
-        case mastercode
+        case mastercode(isHidden:Bool)
         case guess
         case attempt([Match])
         case unknown
@@ -24,6 +24,13 @@ struct Code {
     mutating func randomize(from pegChoices: [Peg]) {
         for ix in pegs.indices {
             pegs[ix] = pegChoices.randomElement() ?? Code.missingPeg
+        }
+    }
+    
+    var isHidden: Bool {
+        switch kind {
+            case .mastercode(let isHidden): return isHidden
+            default: return false
         }
     }
     

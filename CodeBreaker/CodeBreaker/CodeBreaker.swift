@@ -10,7 +10,7 @@ import SwiftUI
 typealias Peg = Color // no need for enum Peg with just one var
 
 struct CodeBreaker {
-    var masterCode: Code = Code(kind: .mastercode)
+    var masterCode: Code = Code(kind: .mastercode(isHidden: true))
     var guess : Code = Code(kind: .guess)  // current guess in progress
     var attempts : [Code] = [Code]()  // all attempts made
     let pegChoices : [Peg] // choices available to make a guess
@@ -18,7 +18,11 @@ struct CodeBreaker {
     init(pegChoices : [Peg] = [.blue,.red,.green,.yellow] ) {
         self.pegChoices = pegChoices
         masterCode.randomize(from: pegChoices )
-//        print(masterCode)
+        print(masterCode)
+    }
+    
+    var isOver: Bool {
+        attempts.last?.pegs == masterCode.pegs
     }
     
     mutating func attemptGuess() {
@@ -26,6 +30,9 @@ struct CodeBreaker {
         attempt.kind = .attempt(guess.match(against: masterCode))  // set kind to an attempt with the associated data of matches
         attempts.append(attempt) // now attempt can be added to attempts
         guess.reset()
+        if isOver {
+            masterCode.kind = .mastercode(isHidden: false)
+        }
     }
     
     mutating func setGuessPeg(_ peg:Peg, at index: Int) {

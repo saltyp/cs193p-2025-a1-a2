@@ -23,6 +23,9 @@ struct CodeView: View {
                         Selection.shape.foregroundColor(Selection.color)
                     }
                 }
+                .overlay {
+                    Selection.shape.foregroundStyle(code.isHidden ? Color.gray : .clear)
+                }
                 .onTapGesture {
                     if code.kind == .guess {
                         selection = index
