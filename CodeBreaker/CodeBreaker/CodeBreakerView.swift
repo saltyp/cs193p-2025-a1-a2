@@ -7,6 +7,39 @@
 
 import SwiftUI
 
+extension Color {
+        private static let namedColors: [String: Color] = [
+            "red": .red,
+            "blue": .blue,
+            "green": .green,
+            "yellow": .yellow,
+            "orange": .orange,
+            "pink": .pink,
+            "purple": .purple,
+            "mint": .mint,
+            "teal": .teal,
+            "cyan": .cyan,
+            "indigo": .indigo,
+            "brown": .brown,
+            "gray": .gray,
+            "black": .black,
+            "white": .white,
+            "clear": .clear
+        ]
+
+    
+    init?(named name: String) {
+        guard let color = Self.namedColors[name.lowercased()] else {
+            return nil
+        }
+        self = color
+    }
+    func randomizedSelection(num: Int) -> [Color] {
+        return Array(Color.namedColors.values.shuffled().prefix(num))
+        }
+}
+
+
 struct CodeBreakerView: View {
     @State var game  = CodeBreaker()
     
@@ -24,6 +57,7 @@ struct CodeBreakerView: View {
         .padding()
     }
     
+    
     var newGameButton: some View {
         Button("New Game") {
             game = CodeBreaker()
@@ -32,7 +66,6 @@ struct CodeBreakerView: View {
         .font(.system(size: 30))
         .minimumScaleFactor(0.1)
     }
-    
     var guessButton: some View {
         Button("Guess") {
             withAnimation {
@@ -45,10 +78,10 @@ struct CodeBreakerView: View {
     }
     
     @ViewBuilder
+    
     func convertStringToView(_ input: String) -> some View {
-        let stringToColorMap : [String:Color] = ["green":.green,"red":.red,"black":.black,"blue":.blue,"yellow":.yellow,"clear":.clear]
         ZStack {
-            if let color = stringToColorMap[input.lowercased()] {
+            if let color = Color(named:input) {
                 RoundedRectangle(cornerRadius:10)
                     .foregroundStyle(color)
                     .overlay {
@@ -68,7 +101,6 @@ struct CodeBreakerView: View {
         .contentShape(Rectangle())
         .aspectRatio(1,contentMode: .fit)
     }
-    
     
     func view(for code:Code) -> some View {
         HStack {
