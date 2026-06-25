@@ -18,14 +18,17 @@ struct CodeBreaker {
     
     enum GameKind : CaseIterable {
         case color
-        case emoji
+        case emojiFace
+        case emojiAnimal
         
         var choices : [Peg] {
             switch self {
             case .color:
                 return ["blue","red","green","yellow","black"]
-            case .emoji:
-                return ["😀","😃","😂","😍","😌","🤪","🥸","🐭","🐹","🦊","🐒","🐸"]
+            case .emojiFace:
+                return ["😀","😂","😍","😌","🤪","🥸"]
+            case .emojiAnimal:
+                return ["🐭","🐹","🦊","🐒","🐸"]
             }
         }
         
