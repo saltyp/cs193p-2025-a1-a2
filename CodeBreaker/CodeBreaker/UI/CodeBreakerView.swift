@@ -16,13 +16,13 @@ struct CodeBreakerView: View {
     
     var body: some View {
         VStack{
-            CodeView(code: game.masterCode, selection: $selection, ancillaryView: { EmptyView() } )
+            CodeView(code: game.masterCode)
             ScrollView {
                 if !game.isOver {
                     CodeView(code: game.guess, selection: $selection) { guessButton }
                 }
                 ForEach(game.attempts.indices.reversed(), id:\.self) { ix in
-                    CodeView(code:game.attempts[ix],selection: $selection) {
+                    CodeView(code:game.attempts[ix]) {
                         if let matches = game.attempts[ix].matches {
                             MatchMarkers(matches: matches)
                         }

@@ -13,6 +13,17 @@ struct CodeView<AncillaryView>: View where AncillaryView: View {
     // MARK: Data Shared with Me
     @Binding var selection: Int
     @ViewBuilder let ancillaryView: () -> AncillaryView
+
+    init(
+        code: Code,
+        selection: Binding<Int> = .constant(-1), // default values for the params
+        @ViewBuilder ancillaryView: @escaping () -> AncillaryView = { EmptyView() }
+    ){
+            self.code = code
+            self._selection = selection  // use of special var created by @Binding to conform type to Int
+            self.ancillaryView = ancillaryView
+    }
+
     // MARK: - Body
     
     var body: some View {
