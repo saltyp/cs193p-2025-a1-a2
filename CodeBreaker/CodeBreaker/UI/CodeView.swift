@@ -12,7 +12,7 @@ struct CodeView<AncillaryView>: View where AncillaryView: View {
     let code:Code
     // MARK: Data Shared with Me
     @Binding var selection: Int
-    let ancillaryView: AncillaryView
+    @ViewBuilder let ancillaryView: () -> AncillaryView
     // MARK: - Body
     
     var body: some View {
@@ -36,7 +36,7 @@ struct CodeView<AncillaryView>: View where AncillaryView: View {
             }
             Rectangle().foregroundStyle(Color.clear).aspectRatio(1, contentMode: .fit)
                 .overlay {
-                    ancillaryView
+                    ancillaryView()
                 }
             }
     }
