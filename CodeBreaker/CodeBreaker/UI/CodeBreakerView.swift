@@ -11,8 +11,8 @@ struct CodeBreakerView: View {
     // MARK: Data Owned By Me
     @State private var game  = CodeBreaker()
     @State private var selection : Int = 0
-    // - MARK: body
     
+    // - MARK: body
     
     var body: some View {
         VStack{
@@ -29,14 +29,15 @@ struct CodeBreakerView: View {
                     }
                 }
             }
-            PegChooser(choices:game.pegChoices) {peg in
-                game.setGuessPeg(peg, at: selection)
-                selection = (selection + 1) % game.guess.pegs.count
-            }
+            PegChooser(choices:game.pegChoices, onChoose: changePegAtSelection)
         }
         .padding()
     }
-        
+
+    func changePegAtSelection(to peg: Peg) {
+        game.setGuessPeg(peg, at: selection)
+        selection = (selection + 1) % game.guess.pegs.count
+    }
     
     var guessButton: some View {
         Button("Guess") {
