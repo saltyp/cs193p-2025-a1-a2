@@ -33,9 +33,15 @@ struct CodeBreakerView: View {
                             MatchMarkers(matches: matches)
                         }
                     }
+                    .transition( //transition defined on entire CodeView
+                        .attempt(game.isOver)
+                    )
                 }
             }
-            PegChooser(choices:game.pegChoices, onChoose: changePegAtSelection)
+            if !game.isOver {
+                PegChooser(choices:game.pegChoices, onChoose: changePegAtSelection)
+                    .transition(.pegChooser)
+            }
         }
         .padding()
     }
@@ -68,6 +74,15 @@ extension Animation {
     static let codeBreaker = Animation.easeOut(duration: 3)
     static let guess = Animation.codeBreaker
     static let restart = Animation.codeBreaker
+}
+
+extension AnyTransition {
+    static let pegChooser = AnyTransition.offset(x: 0, y:200)
+    static func attempt(_ isOver: Bool)-> AnyTransition {
+        return AnyTransition.asymmetric(
+            insertion: isOver ? .opacity : .move(edge:.top),
+            removal: .move(edge:.trailing))
+    }
 }
 
 extension Color  {
