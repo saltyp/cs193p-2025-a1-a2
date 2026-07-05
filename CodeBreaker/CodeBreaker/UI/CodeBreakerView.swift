@@ -26,6 +26,7 @@ struct CodeBreakerView: View {
             ScrollView {
                 if !game.isOver {
                     CodeView(code: game.guess, selection: $selection) { guessButton }
+                        .animation(nil, value:game.attempts.count) //stop animation of anything w/ guess row changing
                 }
                 ForEach(game.attempts.indices.reversed(), id:\.self) { ix in
                     CodeView(code:game.attempts[ix]) {
