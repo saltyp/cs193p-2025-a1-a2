@@ -16,6 +16,12 @@ struct CodeBreakerView: View {
     
     var body: some View {
         VStack{
+            Button("Restart") {
+                withAnimation(.restart){
+                    game.restart()
+                    selection = 0
+                }
+            }
             CodeView(code: game.masterCode)
             ScrollView {
                 if !game.isOver {
@@ -41,7 +47,7 @@ struct CodeBreakerView: View {
     
     var guessButton: some View {
         Button("Guess") {
-            withAnimation {
+            withAnimation(.guess) {
                 game.attemptGuess()
                 selection = 0
             }
@@ -56,6 +62,12 @@ struct CodeBreakerView: View {
         static let scaleFactor = minFontSize/maxFontSize
         
     }    
+}
+
+extension Animation {
+    static let codeBreaker = Animation.easeOut(duration: 3)
+    static let guess = Animation.codeBreaker
+    static let restart = Animation.codeBreaker
 }
 
 extension Color  {
