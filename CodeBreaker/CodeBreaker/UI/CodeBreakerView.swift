@@ -11,20 +11,26 @@ struct CodeBreakerView: View {
     // MARK: Data Owned By Me
     @State private var game  = CodeBreaker()
     @State private var selection : Int = 0
+    @State private var restarting = false // to sequence guess fading in 1st & attempts *then* moving out by first having guess row appear while attempt is added to Scroll View
     
     // - MARK: body
     
     var body: some View {
         VStack{
             Button("Restart") {
-                withAnimation(.restart){
-                    game.restart()
-                    selection = 0
+                withAnimation(.restart) {
+                    restarting = true
+                } completion: {
+                    withAnimation(.restart){
+                        game.restart()
+                        selection = 0
+                        restarting = false
+                    }
                 }
             }
             CodeView(code: game.masterCode)
             ScrollView {
-                if !game.isOver {
+                if !game.isOver || restarting { //hitting restart sets above restarting to true, so for sequencing, have guess row appear on screen first 
                     CodeView(code: game.guess, selection: $selection) { guessButton }
                         .animation(nil, value:game.attempts.count) //stop animation of anything w/ guess row changing
                 }
