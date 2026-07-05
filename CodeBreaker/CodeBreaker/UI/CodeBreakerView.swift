@@ -10,8 +10,10 @@ import SwiftUI
 struct CodeBreakerView: View {
     // MARK: Data Owned By Me
     @State private var game  = CodeBreaker()
+    // UI @States :
     @State private var selection : Int = 0
     @State private var restarting = false // to sequence guess fading in 1st & attempts *then* moving out by first having guess row appear while attempt is added to Scroll View, @ ca 40:00
+    @State private var hideMostRecentMarkers = false
     
     // - MARK: body
     
@@ -34,11 +36,12 @@ struct CodeBreakerView: View {
                     CodeView(code: game.guess, selection: $selection) { guessButton
                     }
                     .animation(nil, value:game.attempts.count) //stop animation of anything w/ guess row changing
-                    .opacity(restarting ? 0 : 1) // dont want guess button fading in on restart. put in after animation so that fading in will still happen
+                    .opacity(restarting ? 0 : 1) // dont want guess button fading in during restart. put in after animation so that fading in will still happen after restart
                 }
                 ForEach(game.attempts.indices.reversed(), id:\.self) { ix in
                     CodeView(code:game.attempts[ix]) {
-                        if let matches = game.attempts[ix].matches {
+                        let showMarkers = !hideMostRecentMarkers || (ix != game.attempts.count - 1) // only hide markers if supposed to be hiding and not the most recent one
+                        if showMarkers, let matches = game.attempts[ix].matches {
                             MatchMarkers(matches: matches)
                         }
                     }
@@ -65,6 +68,11 @@ struct CodeBreakerView: View {
             withAnimation(.guess) {
                 game.attemptGuess()
                 selection = 0
+                hideMostRecentMarkers = true
+            } completion : {
+                withAnimation(.guess) {
+                    hideMostRecentMarkers = false
+                }
             }
         }
         .font(.system(size: GuessButton.maxFontSize))
