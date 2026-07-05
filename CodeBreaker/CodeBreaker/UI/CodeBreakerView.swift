@@ -11,7 +11,7 @@ struct CodeBreakerView: View {
     // MARK: Data Owned By Me
     @State private var game  = CodeBreaker()
     @State private var selection : Int = 0
-    @State private var restarting = false // to sequence guess fading in 1st & attempts *then* moving out by first having guess row appear while attempt is added to Scroll View
+    @State private var restarting = false // to sequence guess fading in 1st & attempts *then* moving out by first having guess row appear while attempt is added to Scroll View, @ ca 40:00
     
     // - MARK: body
     
@@ -30,9 +30,11 @@ struct CodeBreakerView: View {
             }
             CodeView(code: game.masterCode)
             ScrollView {
-                if !game.isOver || restarting { //hitting restart sets above restarting to true, so for sequencing, have guess row appear on screen first 
-                    CodeView(code: game.guess, selection: $selection) { guessButton }
-                        .animation(nil, value:game.attempts.count) //stop animation of anything w/ guess row changing
+                if !game.isOver || restarting { //hitting restart sets above restarting to true, so for sequencing, have guess row appear on screen first
+                    CodeView(code: game.guess, selection: $selection) { guessButton
+                    }
+                    .animation(nil, value:game.attempts.count) //stop animation of anything w/ guess row changing
+                    .opacity(restarting ? 0 : 1) // dont want guess button fading in on restart. put in after animation so that fading in will still happen
                 }
                 ForEach(game.attempts.indices.reversed(), id:\.self) { ix in
                     CodeView(code:game.attempts[ix]) {
