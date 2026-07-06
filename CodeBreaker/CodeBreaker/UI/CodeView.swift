@@ -13,6 +13,8 @@ struct CodeView<AncillaryView>: View where AncillaryView: View {
     // MARK: Data Shared with Me
     @Binding var selection: Int
     @ViewBuilder let ancillaryView: () -> AncillaryView
+    // MARK: Data Owned by Me
+    @Namespace private var selectionNamespace
 
     init(
         code: Code,
@@ -36,12 +38,12 @@ struct CodeView<AncillaryView>: View where AncillaryView: View {
                             if selection == index, code.kind == .guess {
                                 Selection.shape
                                     .foregroundStyle(Selection.color)
-                                    // .animation(.selection, value: selection) // this WILL NOT work in animating grey selections as that shape is NOT on screen (see `if` above) WHEN change happens
+                                    .matchedGeometryEffect(id: "selection", in: selectionNamespace) //matchedGeometry makes animation go from previoius shape to new shape
+                                
                             }
                         }
                         .animation(.selection, value: selection) // animating the Group WILL work as always on screen (no `if` statements here)
                     }
-                    // .animation(.selection, value: selection) // this will work in animating  grey selection, but will have side-effect of animating color apppearing
                     .overlay {  // hidden code obscuring
                         Selection.shape.foregroundStyle(code.isHidden ? Color.gray : .clear)
                             .transaction { transaction in
