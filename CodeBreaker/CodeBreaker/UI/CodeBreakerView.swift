@@ -19,21 +19,14 @@ struct CodeBreakerView: View {
     
     var body: some View {
         VStack{
-            Button("Restart") {
-                withAnimation(.restart) {
-                    restarting = true
-                } completion: {
-                    withAnimation(.restart){
-                        game.restart()
-                        selection = 0
-                        restarting = false
-                    }
-                }
-            }
+            Button("Restart", action:restart)
             CodeView(code: game.masterCode)
             ScrollView {
                 if !game.isOver || restarting { //hitting restart sets above restarting to true, so for sequencing, have guess row appear on screen first
-                    CodeView(code: game.guess, selection: $selection) { guessButton
+                    CodeView(code: game.guess, selection: $selection) {
+                        Button("Guess", action: guess)
+                        .font(.system(size: GuessButton.maxFontSize))
+                            .minimumScaleFactor(GuessButton.scaleFactor)
                     }
                     .animation(nil, value:game.attempts.count) //stop animation of anything w/ guess row changing
                     .opacity(restarting ? 0 : 1) // dont want guess button fading in during restart. put in after animation so that fading in will still happen after restart
@@ -62,21 +55,17 @@ struct CodeBreakerView: View {
         game.setGuessPeg(peg, at: selection)
         selection = (selection + 1) % game.guess.pegs.count
     }
-    
-    var guessButton: some View {
-        Button("Guess") {
+        
+    func guess() {
+        withAnimation(.guess) {
+            game.attemptGuess()
+            selection = 0
+            hideMostRecentMarkers = true
+        } completion : {
             withAnimation(.guess) {
-                game.attemptGuess()
-                selection = 0
-                hideMostRecentMarkers = true
-            } completion : {
-                withAnimation(.guess) {
-                    hideMostRecentMarkers = false
-                }
+                hideMostRecentMarkers = false
             }
         }
-        .font(.system(size: GuessButton.maxFontSize))
-            .minimumScaleFactor(GuessButton.scaleFactor)
     }
         
     struct GuessButton {
@@ -84,7 +73,19 @@ struct CodeBreakerView: View {
         static let maxFontSize : CGFloat = 50
         static let scaleFactor = minFontSize/maxFontSize
         
-    }    
+    }
+    
+    func restart() {
+        withAnimation(.restart) {
+            restarting = true
+        } completion: {
+            withAnimation(.restart){
+                game.restart()
+                selection = 0
+                restarting = false
+            }
+        }
+    }
 }
 
 extension Animation {
