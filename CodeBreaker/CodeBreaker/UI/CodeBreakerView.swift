@@ -24,9 +24,7 @@ struct CodeBreakerView: View {
             ScrollView {
                 if !game.isOver || restarting { //hitting restart sets above restarting to true, so for sequencing, have guess row appear on screen first
                     CodeView(code: game.guess, selection: $selection) {
-                        Button("Guess", action: guess)
-                        .font(.system(size: GuessButton.maxFontSize))
-                            .minimumScaleFactor(GuessButton.scaleFactor)
+                        Button("Guess", action: guess).flexibleSystemFont()
                     }
                     .animation(nil, value:game.attempts.count) //stop animation of anything w/ guess row changing
                     .opacity(restarting ? 0 : 1) // dont want guess button fading in during restart. put in after animation so that fading in will still happen after restart
@@ -68,13 +66,6 @@ struct CodeBreakerView: View {
         }
     }
         
-    struct GuessButton {
-        static let minFontSize : CGFloat = 5
-        static let maxFontSize : CGFloat = 50
-        static let scaleFactor = minFontSize/maxFontSize
-        
-    }
-    
     func restart() {
         withAnimation(.restart) {
             restarting = true
@@ -100,6 +91,14 @@ extension AnyTransition {
         return AnyTransition.asymmetric(
             insertion: isOver ? .opacity : .move(edge:.top),
             removal: .move(edge:.trailing))
+    }
+}
+
+extension View {
+    func flexibleSystemFont(minimum: CGFloat = 8, maximum:CGFloat = 80) -> some View {
+        self
+            .font(.system(size: maximum)) // GuessButton.maxFontSize))
+            .minimumScaleFactor(minimum/maximum)// (GuessButton.scaleFactor)
     }
 }
 
