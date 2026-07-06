@@ -32,10 +32,16 @@ struct CodeView<AncillaryView>: View where AncillaryView: View {
                 PegView(peg:code.pegs[index])
                     .padding(Selection.border)
                     .background {  // selection background
-                        if selection == index, code.kind == .guess {
-                            Selection.shape.foregroundColor(Selection.color)
+                        Group { //allows grouping of item
+                            if selection == index, code.kind == .guess {
+                                Selection.shape
+                                    .foregroundStyle(Selection.color)
+                                    // .animation(.selection, value: selection) // this WILL NOT work in animating grey selections as that shape is NOT on screen (see `if` above) WHEN change happens
+                            }
                         }
+                        .animation(.selection, value: selection) // animating the Group WILL work as always on screen (no `if` statements here)
                     }
+                    // .animation(.selection, value: selection) // this will work in animating  grey selection, but will have side-effect of animating color apppearing
                     .overlay {  // hidden code obscuring
                         Selection.shape.foregroundStyle(code.isHidden ? Color.gray : .clear)
                             .transaction { transaction in
