@@ -19,7 +19,8 @@ struct CodeBreakerView: View {
     
     var body: some View {
         VStack{
-            Button("Restart", action:restart)
+            Button("Restart", systemImage: "arrow.circlepath",   action:restart)
+                // .labelStyle(.titleOnly)
             CodeView(code: game.masterCode)
             ScrollView {
                 if !game.isOver || restarting { //hitting restart sets above restarting to true, so for sequencing, have guess row appear on screen first
