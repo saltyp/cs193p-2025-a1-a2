@@ -28,7 +28,7 @@ struct CodeBreakerView: View {
                         Button("Guess", action: guess).flexibleSystemFont()
                     }
                     .animation(nil, value:game.attempts.count) //stop animation of anything w/ guess row changing
-                    .opacity(restarting ? 0 : 1) // dont want guess button fading in during restart. put in after animation so that fading in will still happen after restart
+                    .opacity(restarting && game.isOver ? 0 : 1) // dont want guess button fading in *during* restart. put in after animation so that fading in will still happen *after* restart. &&game.isOver ensures that when restarting from not completed game, the Guess row & button remains
                 }
                 ForEach(game.attempts.indices.reversed(), id:\.self) { ix in
                     CodeView(code:game.attempts[ix]) {
