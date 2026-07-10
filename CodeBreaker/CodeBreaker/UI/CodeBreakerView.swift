@@ -23,12 +23,12 @@ struct CodeBreakerView: View {
                 // .labelStyle(.titleOnly)
             CodeView(code: game.masterCode)
             ScrollView {
-                if !game.isOver || restarting { //hitting restart sets above restarting to true, so for sequencing, have guess row appear on screen first
+                if !game.isOver { //hitting restart sets above restarting to true, so for sequencing, have guess row appear on screen first ; removed `|| restarting` st guess code isnt there UNTIL restarted
                     CodeView(code: game.guess, selection: $selection) {
                         Button("Guess", action: guess).flexibleSystemFont()
                     }
                     .animation(nil, value:game.attempts.count) //stop animation of anything w/ guess row changing
-                    .opacity(restarting && game.isOver ? 0 : 1) // dont want guess button fading in *during* restart. put in after animation so that fading in will still happen *after* restart. &&game.isOver ensures that when restarting from not completed game, the Guess row & button remains
+                    .opacity(restarting ? 0 : 1) // dont want guess button fading in *during* restart. put in after animation so that fading in will still happen *after* restart.
                 }
                 ForEach(game.attempts.indices.reversed(), id:\.self) { ix in
                     CodeView(code:game.attempts[ix]) {
@@ -69,11 +69,12 @@ struct CodeBreakerView: View {
         
     func restart() {
         withAnimation(.restart) {
-            restarting = true
+            restarting = game.isOver //only do the animation 2-step seq above if game was properly completed before restart
+            game.restart()
+            selection = 0
         } completion: {
             withAnimation(.restart){
-                game.restart()
-                selection = 0
+                
                 restarting = false
             }
         }
