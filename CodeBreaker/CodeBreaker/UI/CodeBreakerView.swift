@@ -21,7 +21,12 @@ struct CodeBreakerView: View {
         VStack{
             Button("Restart", systemImage: "arrow.circlepath",   action:restart)
                 // .labelStyle(.titleOnly)
-            CodeView(code: game.masterCode)
+            CodeView(code: game.masterCode) {
+                ElapsedTime(startTime:game.startTime, endTime: game.endTime)
+                    .flexibleSystemFont()
+                    .monospaced()
+                    .lineLimit(1)
+            }
             ScrollView {
                 if !game.isOver { //hitting restart sets above restarting to true, so for sequencing, have guess row appear on screen first ; removed `|| restarting` st guess code isnt there UNTIL restarted
                     CodeView(code: game.guess, selection: $selection) {
