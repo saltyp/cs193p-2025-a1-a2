@@ -23,7 +23,7 @@ struct CodeBreaker {
     }
     
     var isOver: Bool {
-        attempts.last?.pegs == masterCode.pegs
+        attempts.first?.pegs == masterCode.pegs
     }
     
     mutating func restart() {
@@ -36,9 +36,10 @@ struct CodeBreaker {
     }
     
     mutating func attemptGuess() {
+        guard !attempts.contains(where: {$0.pegs == guess.pegs}) else { return }
         var attempt = guess  // change kind of Code to an attempt, from a guess
         attempt.kind = .attempt(guess.match(against: masterCode))  // set kind to an attempt with the associated data of matches
-        attempts.append(attempt) // now attempt can be added to attempts
+        attempts.insert(attempt, at:0) // now attempt can be added to attempts
         guess.reset()
         if isOver {
             masterCode.kind = .mastercode(isHidden: false)

@@ -8,13 +8,13 @@
 
 import SwiftUI
 
-struct Code {
+struct Code : Hashable {
     var kind : Kind
     var pegs : [Peg] = Array(repeating: Code.missingPeg, count: 4)
 
     static let missingPeg : Peg = .clear
     
-    enum Kind : Equatable { //define enum as Equatable so that we automatically get '==' fxn w/o needing to define it
+    enum Kind : Hashable, Equatable { //define enum as Equatable so that we automatically get '==' fxn w/o needing to define it; Hashable as Kind is enum w/ all associated data hashable.
         case mastercode(isHidden:Bool)
         case guess
         case attempt([Match])
