@@ -10,6 +10,7 @@ import SwiftUI
 typealias Peg = Color // no need for enum Peg with just one var
 
 struct CodeBreaker {
+    var name : String
     var masterCode: Code = Code(kind: .mastercode(isHidden: true))
     var guess : Code = Code(kind: .guess)  // current guess in progress
     var attempts : [Code] = [Code]()  // all attempts made
@@ -17,7 +18,8 @@ struct CodeBreaker {
     var startTime : Date = Date.now
     var endTime : Date?
 
-    init(pegChoices : [Peg] = [.blue,.red,.green,.yellow] ) {
+    init(name: String = "Code Breaker", pegChoices : [Peg] = [.blue,.red,.green,.yellow] ) {
+        self.name = name
         self.pegChoices = pegChoices
         masterCode.randomize(from: pegChoices )
     }
