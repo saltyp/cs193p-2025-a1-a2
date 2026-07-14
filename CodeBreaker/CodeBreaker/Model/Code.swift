@@ -8,7 +8,9 @@
 
 import SwiftUI
 
-struct Code {
+struct Code: Identifiable {
+    var id: [Peg] {pegs} // ObjectIdentifier : a Hashable that identifies this things
+    
     var kind : Kind
     var pegs : [Peg] = Array(repeating: Code.missingPeg, count: 4)
 

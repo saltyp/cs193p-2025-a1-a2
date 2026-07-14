@@ -35,7 +35,7 @@ struct CodeBreakerView: View {
                     .animation(nil, value:game.attempts.count) //stop animation of anything w/ guess row changing
                     .opacity(restarting ? 0 : 1) // dont want guess button fading in *during* restart. put in after animation so that fading in will still happen *after* restart.
                 }
-                ForEach(game.attempts, id:\.pegs) { attempt in // peg is a unique, stable, identifier of attempt
+                ForEach(game.attempts) { attempt in // peg is a unique, stable, identifier of attempt
                     CodeView(code:attempt) {
                         let showMarkers = !hideMostRecentMarkers || (attempt.pegs != game.attempts.first?.pegs) // only hide markers if supposed to be hiding and not the most recent one
                         if showMarkers, let matches = attempt.matches {
