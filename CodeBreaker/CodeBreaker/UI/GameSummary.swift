@@ -15,7 +15,7 @@ struct GameSummary: View {
             Text(game.name).font(.title)
             PegChooser(choices: game.pegChoices, onChoose:nil)
                 .frame(maxHeight: 50)
-            Text("^[\(game.attempts.count+1) attempt](inflect:true)")
+            Text("^[\(game.attempts.count+1) attempt](inflect:true)") //^[...] makes noun attempt adjust to number
         }
 //            .listRowSeparator(.hidden)
 //            .listRowBackground(RoundedRectangle(cornerRadius: 10).foregroundStyle(.clear).padding(5))
