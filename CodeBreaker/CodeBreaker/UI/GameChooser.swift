@@ -10,9 +10,10 @@ import SwiftUI
 struct GameChooser: View {
     // MARK: Data Owned by Me
     @State private var games : [CodeBreaker] = []
+    @State private var columnVisibility: NavigationSplitViewVisibility = .all //all panes on-screen at the same time
     
     var body: some View {
-        NavigationStack {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
             List {
                 ForEach(games) { game in //iterating over ref to instance of CodeBreaker
                     NavigationLink(value:game) { //specifying what thing to show, with View spec'd elsewhere
@@ -39,7 +40,10 @@ struct GameChooser: View {
             .toolbar { //placed on List, not NavigationStack as NavStack decides when to show toolbar as a fxn of which View it is showing
                 EditButton()
             }
+        } detail: { //rhs
+            Text("Choose a Game!")
         }
+        .navigationSplitViewStyle(.balanced)
         .onAppear { //following is list of action that appears before View appears:
             games.append(CodeBreaker(name : "Mastermind", pegChoices: [.red, .blue, .yellow, .green]))
             games.append(CodeBreaker(name : "Earth Tones", pegChoices: [.orange, .brown, .black, .yellow, .green]))
