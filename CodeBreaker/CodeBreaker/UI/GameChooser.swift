@@ -18,6 +18,9 @@ struct GameChooser: View {
                     NavigationLink(value:game) { //specifying what thing to show, with View spec'd elsewhere
                         GameSummary(game:game)
                     }
+                    NavigationLink(value: game.masterCode.pegs) {
+                        Text("Cheat")
+                    }
                 }
                 .onDelete {offsets in
                     games.remove(atOffsets: offsets)
@@ -28,6 +31,9 @@ struct GameChooser: View {
             }
             .navigationDestination(for: CodeBreaker.self) { //ie CodeBreaker.self :: for values that are of type CodeBreaker
                 game in CodeBreakerView(game:game)
+            }
+            .navigationDestination(for: [Peg].self) { pegs in //[Peg].self :: for values that are of type Array<Peg>
+                PegChooser(choices: pegs, onChoose: nil)
             }
             .listStyle(.plain)
             .toolbar { //placed on List, not NavigationStack as NavStack decides when to show toolbar as a fxn of which View it is showing
