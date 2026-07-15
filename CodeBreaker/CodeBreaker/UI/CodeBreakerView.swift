@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct CodeBreakerView: View {
-    // MARK: Data Owned By Me
-    @State private var game  = CodeBreaker()
+    // MARK: Data Shared By Me
+    @Binding var game: CodeBreaker
     // UI @States :
     @State private var selection : Int = 0
     @State private var restarting = false // to sequence guess fading in 1st & attempts *then* moving out by first having guess row appear while attempt is added to Scroll View, @ ca 40:00
@@ -88,5 +88,6 @@ struct CodeBreakerView: View {
 
 
 #Preview {
-    CodeBreakerView()
+    @Previewable @State var game = CodeBreaker(name: "Preview", pegChoices: [Color.red, .green, .yellow])
+    CodeBreakerView(game:$game)
 }
