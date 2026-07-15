@@ -9,15 +9,7 @@ import SwiftUI
 
 typealias Peg = Color // no need for enum Peg with just one var
 
-@Observable class CodeBreaker: Identifiable, Hashable { //@Observable for class so that SwiftUI will observe what is changing in class
-    static func == (lhs:CodeBreaker, rhs:CodeBreaker) -> Bool {
-        //equal if pointers equal
-        return lhs.id == rhs.id
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
+@Observable class CodeBreaker { //@Observable for class so that SwiftUI will observe what is changing in class
     
     var name : String
     var masterCode: Code = Code(kind: .mastercode(isHidden: true))
@@ -78,5 +70,14 @@ extension Peg {
     static let missing = Color.clear
 }
 
-
+extension CodeBreaker: Identifiable, Hashable {
+    static func == (lhs:CodeBreaker, rhs:CodeBreaker) -> Bool {
+        //equal if pointers equal
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+}
 
