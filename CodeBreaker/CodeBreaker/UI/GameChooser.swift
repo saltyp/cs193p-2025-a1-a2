@@ -13,7 +13,7 @@ struct GameChooser: View {
     
     var body: some View {
         NavigationStack {
-            List($games, id: \.pegChoices) { $game in //iterating over *bindable* var (bind in CodeBreakerView
+            List($games, id: \.pegChoices, editActions: [.delete, .move]) { $game in //iterating over *bindable* var (bind in CodeBreakerView
                 NavigationLink {
                     CodeBreakerView(game:$game)
                 } label: {
@@ -21,6 +21,9 @@ struct GameChooser: View {
                 }
             }
             .listStyle(.plain)
+            .toolbar { //placed on List, not NavigationStack as NavStack decides when to show toolbar as a fxn of which View it is showing
+                EditButton()
+            }
         }
         .onAppear { //following is list of action that appears before View appears:
             games.append(CodeBreaker(name : "Mastermind", pegChoices: [.red, .blue, .yellow, .green]))

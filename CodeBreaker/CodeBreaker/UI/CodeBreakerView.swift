@@ -19,14 +19,8 @@ struct CodeBreakerView: View {
     
     var body: some View {
         VStack{
-            Button("Restart", systemImage: "arrow.circlepath",   action:restart)
-                // .labelStyle(.titleOnly)
-            CodeView(code: game.masterCode) {
-                ElapsedTime(startTime:game.startTime, endTime: game.endTime)
-                    .flexibleSystemFont()
-                    .monospaced()
-                    .lineLimit(1)
-            }
+            
+            CodeView(code: game.masterCode)
             ScrollView {
                 if !game.isOver { //hitting restart sets above restarting to true, so for sequencing, have guess row appear on screen first ; removed `|| restarting` st guess code isnt there UNTIL restarted
                     CodeView(code: game.guess, selection: $selection) {
@@ -50,6 +44,18 @@ struct CodeBreakerView: View {
             if !game.isOver {
                 PegChooser(choices:game.pegChoices, onChoose: changePegAtSelection)
                     .transition(.pegChooser)
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction ){//.topBarTrailing) {
+                Button("Restart", systemImage: "arrow.circlepath",   action:restart)
+                    // .labelStyle(.titleOnly)
+            }
+            ToolbarItem {
+                ElapsedTime(startTime:game.startTime, endTime: game.endTime)
+    //                    .flexibleSystemFont()
+                    .monospaced()
+                    .lineLimit(1)
             }
         }
         .padding()
@@ -89,5 +95,7 @@ struct CodeBreakerView: View {
 
 #Preview {
     @Previewable @State var game = CodeBreaker(name: "Preview", pegChoices: [Color.red, .green, .yellow])
-    CodeBreakerView(game:$game)
+    NavigationStack {
+        CodeBreakerView(game:$game)
+    }
 }
