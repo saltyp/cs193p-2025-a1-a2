@@ -14,10 +14,8 @@ struct GameChooser: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(games, id: \.pegChoices) { game in //iterating over ref to instance of CodeBreaker
-                    NavigationLink {
-                        CodeBreakerView(game:game)
-                    } label: {
+                ForEach(games) { game in //iterating over ref to instance of CodeBreaker
+                    NavigationLink(value:game) { //specifying what thing to show, with View spec'd elsewhere
                         GameSummary(game:game)
                     }
                 }
@@ -27,6 +25,9 @@ struct GameChooser: View {
                 .onMove {offsets, destination in
                     games.move(fromOffsets: offsets, toOffset: destination)
                 }
+            }
+            .navigationDestination(for: CodeBreaker.self) { //ie CodeBreaker.self :: for values that are of type CodeBreaker
+                game in CodeBreakerView(game:game)
             }
             .listStyle(.plain)
             .toolbar { //placed on List, not NavigationStack as NavStack decides when to show toolbar as a fxn of which View it is showing
