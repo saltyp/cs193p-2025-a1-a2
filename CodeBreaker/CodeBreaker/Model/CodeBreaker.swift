@@ -15,7 +15,7 @@ typealias Peg = Color // no need for enum Peg with just one var
     var masterCode: Code = Code(kind: .mastercode(isHidden: true))
     var guess : Code = Code(kind: .guess)  // current guess in progress
     var attempts : [Code] = [Code]()  // all attempts made
-    let pegChoices : [Peg] // choices available to make a guess
+    var pegChoices : [Peg] // choices available to make a guess
     var startTime : Date = Date.now
     var endTime : Date?
 
