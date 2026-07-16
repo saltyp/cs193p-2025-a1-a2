@@ -39,6 +39,12 @@ struct GameList: View {
            }
            .listStyle(.plain)
            .toolbar { //placed on List, not NavigationStack as NavStack decides when to show toolbar as a fxn of which View it is showing
+               Button("Add Game", systemImage: "plus") {
+                   withAnimation {
+                       let newGame = CodeBreaker(name:"Untitled", pegChoices:[.red, .blue])
+                       games.append(newGame)
+                   }
+               }
                EditButton()
            }
            .onAppear { addSampleGames() }
