@@ -20,12 +20,24 @@ struct GameChooser: View {
                     NavigationLink(value:game) { //specifying what thing to show, with View spec'd elsewhere
                         GameSummary(game:game)
                     }
+                    .contextMenu {
+                        Button("Delete", systemImage : "minus.circle", role: .destructive) {
+                            withAnimation {
+                                games.removeAll { $0 === game }
+                            }
+                        }
+                    }
                 }
                 .onDelete {offsets in
                     games.remove(atOffsets: offsets)
                 }
                 .onMove {offsets, destination in
                     games.move(fromOffsets: offsets, toOffset: destination)
+                }
+            }
+            .onChange(of: games)  {
+                if let selection, !games.contains(selection) {
+                    self.selection = nil
                 }
             }
             .navigationTitle("Code Breaker")
@@ -47,6 +59,7 @@ struct GameChooser: View {
             games.append(CodeBreaker(name : "Mastermind", pegChoices: [.red, .blue, .yellow, .green]))
             games.append(CodeBreaker(name : "Earth Tones", pegChoices: [.orange, .brown, .black, .yellow, .green]))
             games.append(CodeBreaker(name : "Under Sea", pegChoices: [.blue, .indigo, .cyan]))
+            selection = games[Int.random(in: 0..<games.count)]
         }
     }
 }
