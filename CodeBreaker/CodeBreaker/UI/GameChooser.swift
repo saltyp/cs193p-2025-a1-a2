@@ -11,16 +11,14 @@ struct GameChooser: View {
     // MARK: Data Owned by Me
     @State private var games : [CodeBreaker] = []
 //    @State private var columnVisibility: NavigationSplitViewVisibility = .all //all panes on-screen at the same time
+    @State private var selection: CodeBreaker? = nil
     
     var body: some View {
         NavigationSplitView(columnVisibility: .constant(.all)) { //Binding<NavigationSplitViewVisibility>.constant actually, this communicates that the app starts with .all
-            List {
+            List(selection: $selection) { //to expose which selection of List items
                 ForEach(games) { game in //iterating over ref to instance of CodeBreaker
                     NavigationLink(value:game) { //specifying what thing to show, with View spec'd elsewhere
                         GameSummary(game:game)
-                    }
-                    NavigationLink(value: game.masterCode.pegs) {
-                        Text("Cheat")
                     }
                 }
                 .onDelete {offsets in
@@ -31,20 +29,18 @@ struct GameChooser: View {
                 }
             }
             .navigationTitle("Code Breaker")
-            .navigationDestination(for: CodeBreaker.self) { //ie CodeBreaker.self :: for values that are of type CodeBreaker
-                game in CodeBreakerView(game:game)
-                    .navigationTitle(game.name)
-                    .navigationBarTitleDisplayMode(.inline)
-            }
-            .navigationDestination(for: [Peg].self) { pegs in //[Peg].self :: for values that are of type Array<Peg>
-                PegChooser(choices: pegs, onChoose: nil)
-            }
             .listStyle(.plain)
             .toolbar { //placed on List, not NavigationStack as NavStack decides when to show toolbar as a fxn of which View it is showing
                 EditButton()
             }
         } detail: { //rhs
-            Text("Choose a Game!")
+            if let selection {
+                CodeBreakerView(game:selection)
+                    .navigationTitle(selection.name)
+                    .navigationBarTitleDisplayMode(.inline)
+            } else {
+                Text("Choose a Game!")
+            }
         }
         .navigationSplitViewStyle(.balanced)
         .onAppear { //following is list of action that appears before View appears:
