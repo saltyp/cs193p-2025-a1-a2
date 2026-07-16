@@ -10,10 +10,10 @@ import SwiftUI
 struct GameChooser: View {
     // MARK: Data Owned by Me
     @State private var games : [CodeBreaker] = []
-    @State private var columnVisibility: NavigationSplitViewVisibility = .all //all panes on-screen at the same time
+//    @State private var columnVisibility: NavigationSplitViewVisibility = .all //all panes on-screen at the same time
     
     var body: some View {
-        NavigationSplitView(columnVisibility: $columnVisibility) {
+        NavigationSplitView(columnVisibility: .constant(.all)) { //Binding<NavigationSplitViewVisibility>.constant actually, this communicates that the app starts with .all
             List {
                 ForEach(games) { game in //iterating over ref to instance of CodeBreaker
                     NavigationLink(value:game) { //specifying what thing to show, with View spec'd elsewhere
@@ -30,8 +30,11 @@ struct GameChooser: View {
                     games.move(fromOffsets: offsets, toOffset: destination)
                 }
             }
+            .navigationTitle("Code Breaker")
             .navigationDestination(for: CodeBreaker.self) { //ie CodeBreaker.self :: for values that are of type CodeBreaker
                 game in CodeBreakerView(game:game)
+                    .navigationTitle(game.name)
+                    .navigationBarTitleDisplayMode(.inline)
             }
             .navigationDestination(for: [Peg].self) { pegs in //[Peg].self :: for values that are of type Array<Peg>
                 PegChooser(choices: pegs, onChoose: nil)
