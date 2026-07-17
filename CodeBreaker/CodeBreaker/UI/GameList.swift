@@ -14,6 +14,8 @@ struct GameList: View {
 
     // MARK: Data owned by Me
     @State private var games : [CodeBreaker] = []
+    @State private var showGameEditor: Bool = false
+    @State private var gameToEdit : CodeBreaker?
         
     var body: some View {
            List(selection: $selection) { //to expose which selection of List items
@@ -40,9 +42,19 @@ struct GameList: View {
            .listStyle(.plain)
            .toolbar { //placed on List, not NavigationStack as NavStack decides when to show toolbar as a fxn of which View it is showing
                Button("Add Game", systemImage: "plus") {
-                   withAnimation {
-                       let newGame = CodeBreaker(name:"Untitled", pegChoices:[.red, .blue])
-                       games.append(newGame)
+                   gameToEdit = CodeBreaker(name:"Untitled", pegChoices:[.red, .blue])
+               }
+               .onChange(of: gameToEdit) {
+                   showGameEditor = gameToEdit != nil  // to prevent below sheet being blank
+               }
+               .sheet(isPresented: $showGameEditor, onDismiss: {
+                   if let gameToEdit {
+                       games.insert(gameToEdit, at: 0)
+                   }
+                   gameToEdit = nil
+               }) {
+                   if let gameToEdit {
+                       GameEditor(game:gameToEdit)
                    }
                }
                EditButton()
