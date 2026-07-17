@@ -41,25 +41,42 @@ struct GameList: View {
            }
            .listStyle(.plain)
            .toolbar { //placed on List, not NavigationStack as NavStack decides when to show toolbar as a fxn of which View it is showing
-               Button("Add Game", systemImage: "plus") {
-                   gameToEdit = CodeBreaker(name:"Untitled", pegChoices:[.red, .blue])
-               }
-               .onChange(of: gameToEdit) {
-                   showGameEditor = gameToEdit != nil  // to prevent below sheet being blank
-               }
-               .sheet(isPresented: $showGameEditor, onDismiss: {
-                   if let gameToEdit {
-                       games.insert(gameToEdit, at: 0)
-                   }
-                   gameToEdit = nil
-               }) {
-                   if let gameToEdit {
-                       GameEditor(game:gameToEdit)
-                   }
-               }
+               addButton
                EditButton()
            }
            .onAppear { addSampleGames() }
+    }
+    
+    var addButton: some View {
+        Button("Add Game", systemImage: "plus") {
+            gameToEdit = CodeBreaker(name:"Untitled", pegChoices:[.red, .blue])
+        }
+        .onChange(of: gameToEdit) {
+            showGameEditor = gameToEdit != nil  // to prevent below sheet being blank
+        }// on dismissing screen, insert the game at top & reset to nil:
+        .sheet(isPresented: $showGameEditor, onDismiss: { gameToEdit = nil }) { gameEditor }
+    }
+    
+    @ViewBuilder
+    var gameEditor: some View {
+        if let gameToEdit {
+            NavigationStack {
+                GameEditor(game:gameToEdit)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Cancel") {
+                                self.gameToEdit = nil
+                            }
+                        }
+                        ToolbarItem(placement:.confirmationAction) {
+                            Button("Done") {
+                                games.insert(gameToEdit, at: 0)
+                                self.gameToEdit = nil
+                            }
+                        }
+                    }
+            }
+        }
     }
      
     func deleteButton(for game: CodeBreaker) -> some View {
