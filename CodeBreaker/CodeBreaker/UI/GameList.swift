@@ -60,21 +60,8 @@ struct GameList: View {
     @ViewBuilder
     var gameEditor: some View {
         if let gameToEdit {
-            NavigationStack {
-                GameEditor(game:gameToEdit)
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button("Cancel") {
-                                self.gameToEdit = nil
-                            }
-                        }
-                        ToolbarItem(placement:.confirmationAction) {
-                            Button("Done") {
-                                games.insert(gameToEdit, at: 0)
-                                self.gameToEdit = nil
-                            }
-                        }
-                    }
+            GameEditor(game:gameToEdit) {
+                games.insert(gameToEdit, at: 0)
             }
         }
     }
