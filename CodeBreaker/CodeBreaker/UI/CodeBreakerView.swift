@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct CodeBreakerView: View {
+    // MARK: Data In
+    @Environment(\.scenePhase) var scenePhase //enum with .active(app), .background
+    
     // MARK: Data Shared By Me
     let game: CodeBreaker //for CodeBreaker being a class, let just means pointer is a let
     // UI @States :
@@ -56,6 +59,13 @@ struct CodeBreakerView: View {
         .onChange(of: game) {oldGame, newGame in
             oldGame.pauseTimer()
             newGame.startTimer()
+        }
+        .onChange(of: scenePhase) {
+            switch scenePhase {
+                case .active : game.startTimer()
+                case .background: game.pauseTimer()
+                default: break
+            }
         }
         .toolbar {
             ToolbarItem(placement: .primaryAction ){//.topBarTrailing) {
