@@ -53,6 +53,10 @@ struct CodeBreakerView: View {
         .onDisappear {
             game.pauseTimer()
         }
+        .onChange(of: game) {oldGame, newGame in
+            oldGame.pauseTimer()
+            newGame.startTimer()
+        }
         .toolbar {
             ToolbarItem(placement: .primaryAction ){//.topBarTrailing) {
                 Button("Restart", systemImage: "arrow.circlepath",   action:restart)

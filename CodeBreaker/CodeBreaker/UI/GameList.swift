@@ -28,7 +28,7 @@ struct GameList: View {
                     deleteButton(for: game)
                 }
                 .swipeActions(edge: .leading) {
-                    editButton(for: game)
+                    editButton(for: game){
                         .tint(.accentColor)
                 }
             }
