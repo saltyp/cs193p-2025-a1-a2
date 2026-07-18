@@ -24,6 +24,7 @@ struct GameList: View {
                        GameSummary(game:game)
                    }
                    .contextMenu {
+                       editButton(for: game) // editing the game
                        deleteButton(for: game)
                    }
                }
@@ -42,7 +43,7 @@ struct GameList: View {
            .listStyle(.plain)
            .toolbar { //placed on List, not NavigationStack as NavStack decides when to show toolbar as a fxn of which View it is showing
                addButton
-               EditButton()
+               EditButton() // editing the list of games
            }
            .onAppear { addSampleGames() }
     }
@@ -60,8 +61,13 @@ struct GameList: View {
     @ViewBuilder
     var gameEditor: some View {
         if let gameToEdit {
-            GameEditor(game:gameToEdit) {
-                games.insert(gameToEdit, at: 0)
+            let copyOfGameToEdit = CodeBreaker(name: gameToEdit.name, pegChoices: gameToEdit.pegChoices) //CodeBreaker is a class so need to create a new instance to create a copy of it
+            GameEditor(game:copyOfGameToEdit) {
+                if let index = games.firstIndex(of: gameToEdit) {
+                    games[index] = copyOfGameToEdit // existing game so replace
+                } else { //new game so insert
+                    games.insert(copyOfGameToEdit, at: 0)
+                }
             }
         }
     }
@@ -72,6 +78,14 @@ struct GameList: View {
                 games.removeAll { $0 === game }
             }
         }
+    }
+    
+    /// editing a particular game
+    func editButton(for game: CodeBreaker) -> some View {
+        Button("Edit", systemImage : "pencil") {
+            gameToEdit = game
+        }
+            .sheet(isPresented: $showGameEditor, onDismiss: { gameToEdit = nil }) { gameEditor }
     }
     
     func addSampleGames() {
