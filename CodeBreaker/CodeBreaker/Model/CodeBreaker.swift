@@ -16,13 +16,27 @@ typealias Peg = Color // no need for enum Peg with just one var
     var guess : Code = Code(kind: .guess)  // current guess in progress
     var attempts : [Code] = [Code]()  // all attempts made
     var pegChoices : [Peg] // choices available to make a guess
-    var startTime : Date = Date.now
+    var startTime : Date?
     var endTime : Date?
+    var elapsedTime : TimeInterval = 0 //TimeInterval type Double
 
     init(name: String = "Code Breaker", pegChoices : [Peg] = [.blue,.red,.green,.yellow] ) {
         self.name = name
         self.pegChoices = pegChoices
         masterCode.randomize(from: pegChoices )
+    }
+    
+    func startTimer() {
+        if startTime == nil, !isOver {
+            startTime = .now
+        }
+    }
+    
+    func pauseTimer() {
+        if let startTime {
+            elapsedTime += Date.now.timeIntervalSince(startTime)
+        }
+        startTime = nil
     }
     
     var isOver: Bool {
@@ -36,6 +50,7 @@ typealias Peg = Color // no need for enum Peg with just one var
         attempts.removeAll()
         startTime = .now
         endTime = nil
+        elapsedTime = 0
     }
     
     func attemptGuess() {
@@ -47,6 +62,7 @@ typealias Peg = Color // no need for enum Peg with just one var
         if isOver {
             masterCode.kind = .mastercode(isHidden: false)
             endTime = .now
+            pauseTimer()
         }
     }
     
