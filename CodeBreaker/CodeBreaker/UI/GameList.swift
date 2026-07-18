@@ -28,7 +28,7 @@ struct GameList: View {
                     deleteButton(for: game)
                 }
                 .swipeActions(edge: .leading) {
-                    editButton(for: game){
+                    editButton(for: game)
                         .tint(.accentColor)
                 }
             }
@@ -58,6 +58,7 @@ struct GameList: View {
         }
         .sheet(isPresented: showGameEditor) { gameEditor } //isPresented set to false when sheet is cancelled, causing set in showGameEditor to be used to set showGameEditor to false
     }
+
     @ViewBuilder
     var gameEditor: some View {
         if let gameToEdit {
@@ -92,13 +93,13 @@ struct GameList: View {
     }
     
     /// editing a particular game
-    
     func editButton(for game: CodeBreaker) -> some View {
         Button("Edit", systemImage : "pencil") {
             gameToEdit = game
         }
         .sheet(isPresented: showGameEditor, onDismiss: { gameToEdit = nil }) { gameEditor }
     }
+    
     func addSampleGames() {
         if games.isEmpty {
             games.append(CodeBreaker(name : "Mastermind", pegChoices: [.red, .blue, .yellow, .green]))
