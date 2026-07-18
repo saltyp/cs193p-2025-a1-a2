@@ -14,7 +14,6 @@ struct GameList: View {
 
     // MARK: Data owned by Me
     @State private var games : [CodeBreaker] = []
-    @State private var showGameEditor: Bool = false
     @State private var gameToEdit : CodeBreaker?
         
     var body: some View {
@@ -48,16 +47,13 @@ struct GameList: View {
            .onAppear { addSampleGames() }
     }
     
+    
     var addButton: some View {
         Button("Add Game", systemImage: "plus") {
             gameToEdit = CodeBreaker(name:"Untitled", pegChoices:[.red, .blue])
         }
-        .onChange(of: gameToEdit) {
-            showGameEditor = gameToEdit != nil  // to prevent below sheet being blank
-        }// on dismissing screen, insert the game at top & reset to nil:
-        .sheet(isPresented: $showGameEditor, onDismiss: { gameToEdit = nil }) { gameEditor }
+        .sheet(isPresented: showGameEditor) { gameEditor } //isPresented set to false when sheet is cancelled, causing set in showGameEditor to be used to set showGameEditor to false
     }
-    
     @ViewBuilder
     var gameEditor: some View {
         if let gameToEdit {
@@ -71,6 +67,17 @@ struct GameList: View {
             }
         }
     }
+    
+    var showGameEditor: Binding<Bool> {
+        Binding<Bool>(get: {
+            gameToEdit != nil
+        },
+          set: { newValue in
+            if !newValue {
+                gameToEdit = nil
+            }
+        })
+    }
      
     func deleteButton(for game: CodeBreaker) -> some View {
         Button("Delete", systemImage : "minus.circle", role: .destructive) {
@@ -81,13 +88,13 @@ struct GameList: View {
     }
     
     /// editing a particular game
+    
     func editButton(for game: CodeBreaker) -> some View {
         Button("Edit", systemImage : "pencil") {
             gameToEdit = game
         }
-            .sheet(isPresented: $showGameEditor, onDismiss: { gameToEdit = nil }) { gameEditor }
+        .sheet(isPresented: showGameEditor, onDismiss: { gameToEdit = nil }) { gameEditor }
     }
-    
     func addSampleGames() {
         if games.isEmpty {
             games.append(CodeBreaker(name : "Mastermind", pegChoices: [.red, .blue, .yellow, .green]))
