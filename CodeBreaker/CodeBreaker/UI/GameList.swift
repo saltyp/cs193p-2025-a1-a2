@@ -16,37 +16,41 @@ struct GameList: View {
     @State private var games : [CodeBreaker] = []
     @State private var gameToEdit : CodeBreaker?
         
-    var body: some View {
-           List(selection: $selection) { //to expose which selection of List items
-               ForEach(games) { game in //iterating over ref to instance of CodeBreaker
-                   NavigationLink(value:game) { //specifying what thing to show, with View spec'd elsewhere
-                       GameSummary(game:game)
-                   }
-                   .contextMenu {
-                       editButton(for: game) // editing the game
-                       deleteButton(for: game)
-                   }
-               }
-               .onDelete {offsets in
-                   games.remove(atOffsets: offsets)
-               }
-               .onMove {offsets, destination in
-                   games.move(fromOffsets: offsets, toOffset: destination)
-               }
-           }
-           .onChange(of: games)  {
-               if let selection, !games.contains(selection) {
-                   self.selection = nil
-               }
-           }
-           .listStyle(.plain)
-           .toolbar { //placed on List, not NavigationStack as NavStack decides when to show toolbar as a fxn of which View it is showing
-               addButton
-               EditButton() // editing the list of games
-           }
-           .onAppear { addSampleGames() }
-    }
     
+    var body: some View {
+        List(selection: $selection) { //to expose which selection of List items
+            ForEach(games) { game in //iterating over ref to instance of CodeBreaker
+                NavigationLink(value:game) { //specifying what thing to show, with View spec'd elsewhere
+                    GameSummary(game:game)
+                }
+                .contextMenu {
+                    editButton(for: game) // editing the game
+                    deleteButton(for: game)
+                }
+                .swipeActions(edge: .leading) {
+                    editButton(for: game)
+                        .tint(.accentColor)
+                }
+            }
+            .onDelete {offsets in
+                games.remove(atOffsets: offsets)
+            }
+            .onMove {offsets, destination in
+                games.move(fromOffsets: offsets, toOffset: destination)
+            }
+        }
+        .onChange(of: games)  {
+            if let selection, !games.contains(selection) {
+                self.selection = nil
+            }
+        }
+        .listStyle(.plain)
+        .toolbar { //placed on List, not NavigationStack as NavStack decides when to show toolbar as a fxn of which View it is showing
+            addButton
+            EditButton() // editing the list of games
+        }
+        .onAppear { addSampleGames() }
+    }
     
     var addButton: some View {
         Button("Add Game", systemImage: "plus") {
